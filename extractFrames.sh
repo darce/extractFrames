@@ -10,11 +10,13 @@ if [ "$#" -ne 5 ]; then
     exit 1
 fi
 
-input_file="$1"
+file_path="$1"
 start_time="$2"
 end_time="$3"
 number_of_frames="$4"
 output_directory="$5"
+
+input_file=$(basename "$file_path")
 
 mkdir -p "$output_directory"
 
@@ -32,7 +34,7 @@ interval=$(echo "scale=6; $duration / $number_of_frames" | bc)
 
 for ((i=0; i<number_of_frames; i++)); do
     current_offset=$(echo "scale=6; $start_seconds + $i * $interval" | bc)
-    ffmpeg -y -hwaccel videotoolbox -ss "$current_offset" -i "$input_file" -vframes 1 -q:v 2 -f image2 -y -loglevel error "$output_directory/$input_file$(printf "%03d" $i).png"
+    ffmpeg -y -hwaccel videotoolbox -ss "$current_offset" -i "$file_path" -vframes 1 -q:v 2 -f image2 -y -loglevel error "$output_directory/$input_file$(printf "%03d" $i).png"
 done
 
 echo "Extraction complete. Frames saved in $output_directory."
