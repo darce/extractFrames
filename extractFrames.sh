@@ -35,6 +35,7 @@ echo "Extracting frames from $input_file every $interval seconds."
 for ((i=0; i<number_of_frames; i++)); do
     current_offset=$(echo "scale=6; $start_seconds + $i * $interval" | bc)
     ffmpeg -y -ss "$current_offset" -i "$file_path" -vframes 1 -q:v 2 -f image2 -y -loglevel error "$output_directory/$input_file$(printf "%03d" $i).png"
+    echo -ne "Extracted $i out of $number_of_frames frames.\r"
 done
 
-echo "Extraction complete. Frames saved in $output_directory."
+echo -e "\nExtraction complete. Frames saved in $output_directory."
